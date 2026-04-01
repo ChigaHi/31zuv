@@ -6,9 +6,10 @@ import 'arguments.dart';
 import 'exceptions.dart';
 
 class CommandRunner {
-  CommandRunner({this.onError});
+  CommandRunner({this.onOutput, this.onError});
 
   final Map<String, Command> _commands = <String, Command>{};
+  FutureOr<void> Function(String)? onOutput;
   FutureOr<void> Function(Object)? onError;
 
   UnmodifiableSetView<Command> get commands =>
@@ -19,7 +20,12 @@ class CommandRunner {
       final ArgResults results = parse(input);
       if (results.command != null) {
         Object? output = await results.command!.run(results);
-        print(output.toString());
+        final outputStr = output.toString();
+        if (onOutput != null) {
+          await onOutput!(outputStr);
+        } else {
+          print(outputStr);
+        }
       }
     } on Exception catch (exception) {
       if (onError != null) {
@@ -39,7 +45,6 @@ class CommandRunner {
     ArgResults results = ArgResults();
     if (input.isEmpty) return results;
 
-    // Проверка на существование команды
     if (_commands.containsKey(input.first)) {
       results.command = _commands[input.first];
       input = input.sublist(1);
@@ -51,7 +56,6 @@ class CommandRunner {
       );
     }
 
-    // Проверка на несколько команд
     if (results.command != null &&
         input.isNotEmpty &&
         _commands.containsKey(input.first)) {
@@ -62,7 +66,6 @@ class CommandRunner {
       );
     }
 
-    // Обработка опций (флагов и параметров)
     Map<Option, Object?> inputOptions = {};
     int i = 0;
     while (i < input.length) {
@@ -105,7 +108,6 @@ class CommandRunner {
           i++;
         }
       } else {
-        // Проверка на лишние позиционные аргументы
         if (results.commandArg != null && results.commandArg!.isNotEmpty) {
           throw ArgumentException(
             'Commands can only have up to one argument.',
@@ -118,7 +120,7 @@ class CommandRunner {
       i++;
     }
     results.options = inputOptions;
-    return results;
+    return results; // !!! Важно: всегда возвращаем results
   }
 
   String _removeDash(String input) {
