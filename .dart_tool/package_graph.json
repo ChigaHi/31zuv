@@ -35,6 +35,7 @@
       "name": "wikipedia",
       "version": "1.0.0",
       "dependencies": [
+        "http",
         "path"
       ],
       "devDependencies": [
@@ -79,11 +80,6 @@
       "dependencies": []
     },
     {
-      "name": "path",
-      "version": "1.9.1",
-      "dependencies": []
-    },
-    {
       "name": "http",
       "version": "1.6.0",
       "dependencies": [
@@ -92,6 +88,11 @@
         "meta",
         "web"
       ]
+    },
+    {
+      "name": "path",
+      "version": "1.9.1",
+      "dependencies": []
     },
     {
       "name": "yaml",
