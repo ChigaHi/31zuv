@@ -1,4 +1,5 @@
 import 'package:command_runner/command_runner.dart';
+import 'package:wikipedia/wikipedia.dart';
 
 const version = '0.0.1';
 
