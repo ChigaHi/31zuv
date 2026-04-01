@@ -12,3 +12,4 @@ dependencies:
     path: ../command_runner
   wikipedia:
     path: ../../wikipedia
+  logging: ^1.2.0   # добавляем
